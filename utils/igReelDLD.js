@@ -1,7 +1,6 @@
 
 const axios = require('axios');
 async function igReelDLD(igUrl) {
-    const igUrl = "https://www.instagram.com/reel/DHQGCdTR4Yg/?igsh=OHNwbG92djQwMDNj"
     const reelId = igUrl.split('/reel/')[1].split('/')[0];
     console.log("Reel Id: ", reelId)
     // const resp = await axios.get(`https://instagram-reels-downloader-tau.vercel.app/api/video?postUrl=${url}`)
