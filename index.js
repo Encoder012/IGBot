@@ -1,5 +1,6 @@
 
 const receiveAndSend = require('./utils/twilioUtil');
+const igReelDLD = require('./utils/igReelDLD')
 
 const express = require('express');
 const app = express();
