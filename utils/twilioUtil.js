@@ -1,5 +1,6 @@
 
 const igReelDLD = require('./igReelDLD')
+const getIGReel = require('./fetchIGReel')
 
 require('dotenv').config();
 
@@ -28,7 +29,7 @@ async function receiveAndSend(req, res) {
         return;
     }
 
-    const downloadUrl = await igReelDLD(url);
+    const downloadUrl = await getIGReel(url);
     console.log(downloadUrl)
 
 
