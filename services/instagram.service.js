@@ -58,6 +58,7 @@ async function getIGReel(reelUrl, requestConfig = {}) {
         "Sec-Fetch-Site": "same-origin",
         "Pragma": "no-cache",
         "Cache-Control": "no-cache",
+        "referrer": `https://www.instagram.com/p/${shortcode}/`,
     };
 
     const body = genReqBody(shortcode);
