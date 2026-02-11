@@ -1,5 +1,5 @@
-const axios = require('axios');
-const qs = require('qs');
+import axios from 'axios';
+import { stringify } from 'qs';
 
 function genReqBody(shortcode) {
     return {
@@ -62,19 +62,15 @@ async function getIGReel(reelUrl, requestConfig = {}) {
 
     const body = genReqBody(shortcode);
 
-    try {
-        const response = await axios.post(url, qs.stringify(body), {
-            headers: headers,
-            params: requestConfig,
-            maxRedirects: 0,
-        });
+    const response = await axios.post(url, stringify(body), {
+        headers: headers,
+        params: requestConfig,
+        maxRedirects: 0,
+    });
 
-        const videoUrl = response.data.data.xdt_shortcode_media.video_url;
-        return videoUrl;
-    } catch (error) {
-        console.error("Error fetching Instagram post:", error);
-        return null;
-    }
+    const videoUrl = response.data.data.xdt_shortcode_media.video_url;
+    console.log(videoUrl)
+    return videoUrl;
 }
 
-module.exports = getIGReel
+export default getIGReel
