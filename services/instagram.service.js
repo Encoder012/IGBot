@@ -68,6 +68,8 @@ async function getIGReel(reelUrl, requestConfig = {}) {
         maxRedirects: 0,
     });
 
+    console.log(response)
+
     const videoUrl = response.data.data.xdt_shortcode_media.video_url;
     console.log(videoUrl)
     return videoUrl;
