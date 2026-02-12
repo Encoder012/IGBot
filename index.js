@@ -3,7 +3,8 @@ import webhookRoutes from './routers/webhook.routes.js';
 import urlRoutes from './routers/shorturl.routes.js';
 import cors from "cors";
 import express from 'express'
-
+import errorHandler from "./middlewares/error.middleware.js"
+import logRoutes from './routers/log.routes.js'
 const app = express()
 
 const corsOptions = {
@@ -12,8 +13,13 @@ const corsOptions = {
 
 app.use(cors(corsOptions))
 app.use(express.urlencoded({ extended: true }));
+
 app.use('/webhook', webhookRoutes)
 app.use('/p', urlRoutes)
+app.use('/logs', logRoutes)
+
+app.use(errorHandler)
+
 
 app.get('/', (req, res) => {
     res.send('working fine')
