@@ -12,9 +12,9 @@ const webhookWhatsapp = async (req, res) => {
     console.log(req.body)
     const url = req.body.Body;
     if (url.includes("instagram")) {
-        const igURL = await getIGReel(url);
+        const { igURL, shortcode } = await getIGReel(url);
         if (igURL) {
-            // const shortenUrl = await createShortUrl(igURL, protocol, host);
+            const shortenUrl = await createShortUrl(igURL, shortcode, host);
             twilioWhatsapp(clientWaId, profileName, igURL, "")
 
         } else {

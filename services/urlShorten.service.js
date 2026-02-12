@@ -1,20 +1,17 @@
 import crypto from 'crypto';
 import ShortUrlModel from '../models/shortenUrl.model.js';
 
-function genShortUrlCode() {
-    return crypto.randomBytes(8).toString('hex');
-}
 
-async function createShortUrl(originalUrl, protocol, host) {
-    let shortCode = await ShortUrlModel.findOne({ originalUrl });
+
+async function createShortUrl(originalUrl, shortcode, host) {
+    let shortCode = await ShortUrlModel.findOne({ shortcode });
     if (!shortCode) {
-        shortCode = genShortUrlCode()
         const newUrl = await ShortUrlModel.create({
             originalUrl,
             shortCode
         });
     }
-    const shortUrl = `https://${host}/p/${shortCode}`
+    const shortUrl = `https://${host}/p/${shortcode}`
     console.log(shortUrl)
     return {
         originalUrl,
