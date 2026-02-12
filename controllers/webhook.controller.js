@@ -14,8 +14,8 @@ const webhookWhatsapp = async (req, res) => {
     if (url.includes("instagram")) {
         const igURL = await getIGReel(url);
         if (igURL) {
-            const shortenUrl = await createShortUrl(igURL, protocol, host);
-            twilioWhatsapp(clientWaId, profileName, shortenUrl, "")
+            // const shortenUrl = await createShortUrl(igURL, protocol, host);
+            twilioWhatsapp(clientWaId, profileName, igURL, "")
 
         } else {
             twilioWhatsapp(clientWaId, profileName, null, "Could not fetch the reel, please try again.")
