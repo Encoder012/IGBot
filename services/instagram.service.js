@@ -71,9 +71,9 @@ async function getIGReel(reelUrl, requestConfig = {}) {
 
     console.log(response)
 
-    const videoUrl = response.data.data.xdt_shortcode_media.video_url;
-    console.log(videoUrl)
-    return { videoUrl, shortcode };
+    const postUrl = response.data.data.xdt_shortcode_media.video_url;
+    console.log(postUrl)
+    return { postUrl, shortcode };
 }
 
 export default getIGReel
