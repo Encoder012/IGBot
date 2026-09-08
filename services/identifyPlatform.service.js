@@ -1,6 +1,6 @@
 function getPlatform(url) {
     const platforms = [
-        { name: 'INSTAGRAM', pattern: /instagram\.com/ },
+        { name: 'INSTAGRAM', pattern: /instagram\.com|instagr\.am/ },
         { name: 'TWITTER', pattern: /twitter\.com/ },
         { name: 'FACEBOOK', pattern: /facebook\.com/ },
         { name: 'YOUTUBE', pattern: /youtube\.com|youtu\.be/ },
