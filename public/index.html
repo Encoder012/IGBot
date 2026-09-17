@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>YouTube Direct Stream & Video Link Extractor</title>
+  <meta name="description" content="Extract direct high-quality downloadable video and audio streaming links from YouTube with zero external libraries.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <div class="bg-glow"></div>
+  <div class="bg-grid"></div>
+
+  <header class="app-header">
+    <div class="brand">
+      <div class="brand-icon">
+        <svg viewBox="0 0 24 24" fill="currentColor">
+          <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
+        </svg>
+      </div>
+      <div class="brand-text">
+        <h1>TubeExtract <span class="badge-pro">PRO</span></h1>
+        <p>Direct High-Quality MP4 & Audio Link Extractor</p>
+      </div>
+    </div>
+    <div class="header-tags">
+      <span class="status-pill"><span class="dot"></span> Native Engine Active</span>
+    </div>
+  </header>
+
+  <main class="container">
+    <!-- Search Section -->
+    <section class="search-card">
+      <form id="extract-form" class="search-form">
+        <div class="input-wrapper">
+          <div class="input-icon">
+            <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none">
+              <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
+              <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
+            </svg>
+          </div>
+          <input 
+            type="text" 
+            id="url-input" 
+            placeholder="Paste YouTube URL or Video ID (e.g. https://www.youtube.com/watch?v=mOqhhDXUgUo)" 
+            value="https://www.youtube.com/watch?v=mOqhhDXUgUo"
+            required
+            autocomplete="off"
+            spellcheck="false"
+          >
+          <button type="button" id="clear-btn" class="clear-btn" title="Clear">✕</button>
+        </div>
+        <button type="submit" id="submit-btn" class="btn-primary">
+          <span class="btn-text">Extract Direct Links</span>
+          <span class="btn-spinner"></span>
+        </button>
+      </form>
+
+      <div class="quick-examples">
+        <span class="examples-label">Quick Test:</span>
+        <button class="chip" data-url="https://www.youtube.com/watch?v=mOqhhDXUgUo">
+          <svg viewBox="0 0 24 24" width="12" height="12" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+          Master 80% Antigravity (mOqhhDXUgUo)
+        </button>
+      </div>
+    </section>
+
+    <!-- Error Banner -->
+    <div id="error-card" class="error-card hidden">
+      <div class="error-icon">⚠️</div>
+      <div class="error-content">
+        <h4>Extraction Error</h4>
+        <p id="error-message">Something went wrong.</p>
+      </div>
+    </div>
+
+    <!-- Results Section -->
+    <section id="results-card" class="results-card hidden">
+      <!-- Video Metadata Header -->
+      <div class="video-meta-box">
+        <div class="thumbnail-wrapper">
+          <img id="video-thumbnail" src="" alt="Thumbnail">
+          <span id="video-duration-badge" class="duration-badge">00:00</span>
+        </div>
+        <div class="video-info">
+          <h2 id="video-title">Video Title</h2>
+          <div class="meta-row">
+            <span class="meta-item author">
+              <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" fill="none" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+              <span id="video-author">Channel</span>
+            </span>
+            <span class="meta-item id">
+              <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" fill="none" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="2.18" ry="2.18"></rect><line x1="7" y1="2" x2="7" y2="22"></line><line x1="17" y1="2" x2="17" y2="22"></line><line x1="2" y1="12" x2="22" y2="12"></line><line x1="2" y1="7" x2="7" y2="7"></line><line x1="2" y1="17" x2="7" y2="17"></line><line x1="17" y1="17" x2="22" y2="17"></line><line x1="17" y1="7" x2="22" y2="7"></line></svg>
+              <code id="video-id">mOqhhDXUgUo</code>
+            </span>
+            <span class="meta-badge verified">✓ Live Direct CDN Streams Verified</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Live Video Player Preview with Quality Switcher -->
+      <div class="player-container">
+        <div class="player-header">
+          <div class="player-header-title">
+            <h3>Player Preview (Synced Audio & Video)</h3>
+            <span class="player-tag" id="current-player-mode-tag">High Quality (1080p HD Synced)</span>
+          </div>
+          <div class="player-mode-switch">
+            <button class="mode-btn active" id="btn-mode-hd" data-mode="hd" title="Play High Quality 1080p with Original Audio Synced">
+              <span class="mode-dot"></span> 1080p HD Synced
+            </button>
+            <button class="mode-btn" id="btn-mode-720" data-mode="720" title="Play High Quality 720p with Original Audio Synced">
+              720p HD Synced
+            </button>
+            <button class="mode-btn" id="btn-mode-direct" data-mode="direct" title="Play Direct Progressive Stream">
+              360p MP4 Direct
+            </button>
+          </div>
+        </div>
+
+        <!-- Video Player Viewport -->
+        <div class="player-viewport">
+          <!-- 1. High Definition Synced Player (1080p / 720p with synced original audio) -->
+          <div id="hd-player-container" class="hd-player-wrapper">
+            <iframe 
+              id="hd-player-iframe" 
+              src="" 
+              title="YouTube video player" 
+              frameborder="0" 
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+              allowfullscreen
+            ></iframe>
+          </div>
+
+          <!-- 2. Direct HTML5 MP4 Stream Player -->
+          <div id="direct-player-container" class="direct-player-wrapper hidden">
+            <video id="preview-player" controls preload="metadata" playsinline></video>
+          </div>
+        </div>
+
+        <!-- Prominent Download Combined Bar -->
+        <div class="player-download-bar">
+          <div class="download-bar-meta">
+            <div class="download-bar-title">
+              <span class="meta-icon">🎬</span>
+              <strong>Download Combined (Video + Audio Synced)</strong>
+              <span class="verified-badge-pill" id="verified-size-pill">✓ 30.64 MB Verified</span>
+            </div>
+            <p class="download-bar-sub">Full complete video combined with audio &bull; Matches exact video stream size &bull; No 403 errors</p>
+          </div>
+          <a href="#" class="btn-hero-download" id="hero-download-btn">
+            <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" fill="none" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+            Download Combined MP4
+          </a>
+        </div>
+      </div>
+
+      <!-- Format Tabs -->
+      <div class="tabs-container">
+        <div class="tabs-nav">
+          <button class="tab-btn active" data-tab="combined">
+            <span class="tab-icon">🎬</span> Video + Audio (Combined)
+          </button>
+          <button class="tab-btn" data-tab="video-only">
+            <span class="tab-icon">⚡</span> High Definition (1080p / 720p)
+          </button>
+          <button class="tab-btn" data-tab="audio-only">
+            <span class="tab-icon">🎵</span> High-Fidelity Audio
+          </button>
+          <button class="tab-btn" data-tab="json-view">
+            <span class="tab-icon">{ }</span> Raw JSON
+          </button>
+        </div>
+
+        <!-- Tab 1: Combined Progressive Video (Video + Audio) -->
+        <div id="tab-combined" class="tab-content active">
+          <div class="stream-card highlight">
+            <div class="stream-info">
+              <div class="stream-badge-row">
+                <span class="quality-badge badge-green">Ready to Play</span>
+                <span class="format-badge" id="muxed-quality">360p MP4</span>
+                <span class="size-badge" id="muxed-size">0 MB</span>
+              </div>
+              <h4>Direct Multiplexed Video (Audio & Video Included)</h4>
+              <p class="stream-desc">Ready to stream or download in any player without needing separation or re-encoding.</p>
+            </div>
+            <div class="stream-actions">
+              <button class="action-btn copy-btn" id="copy-muxed-btn">
+                <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" fill="none" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                Copy Link
+              </button>
+              <a href="#" target="_blank" class="action-btn open-btn" id="open-muxed-btn">
+                <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" fill="none" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+                Open in Tab
+              </a>
+              <a href="#" class="action-btn download-btn" id="download-muxed-btn">
+                <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" fill="none" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                Download MP4
+              </a>
+            </div>
+          </div>
+          <div class="url-codebox">
+            <input type="text" id="muxed-url-text" readonly>
+          </div>
+        </div>
+
+        <!-- Tab 2: Video Only (1080p, 720p, etc.) -->
+        <div id="tab-video-only" class="tab-content">
+          <div id="video-streams-list" class="streams-list">
+            <!-- Dynamically injected -->
+          </div>
+        </div>
+
+        <!-- Tab 3: Audio Only -->
+        <div id="tab-audio-only" class="tab-content">
+          <div class="audio-player-box">
+            <h4>Live Audio Stream Preview</h4>
+            <audio id="preview-audio" controls preload="none"></audio>
+          </div>
+          <div id="audio-streams-list" class="streams-list">
+            <!-- Dynamically injected -->
+          </div>
+        </div>
+
+        <!-- Tab 4: Raw JSON View -->
+        <div id="tab-json-view" class="tab-content">
+          <div class="json-actions">
+            <button class="action-btn copy-btn" id="copy-json-btn">
+              <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" fill="none" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+              Copy Full JSON
+            </button>
+          </div>
+          <pre id="json-output"><code></code></pre>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Toast Notification -->
+  <div id="toast" class="toast">Link copied to clipboard!</div>
+
+  <footer class="app-footer">
+    <p>Pure JavaScript YouTube Stream Extractor &bull; Zero External Libraries &bull; Native InnerTube Protocol</p>
+  </footer>
+
+  <script src="/app.js"></script>
+</body>
+</html>

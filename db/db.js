@@ -1,16 +1,19 @@
 import { connect } from "mongoose";
-import { configDotenv } from "dotenv";
-configDotenv()
+import 'dotenv/config';
+
 const connectDB = async () => {
     try {
-        const uri = `${process.env.MONGO_DB_URI}`;
-        const db = await connect(uri);
-        console.log("databse connected");
+        if (!process.env.MONGO_DB_URI) {
+            console.warn("[DB Warning] MONGO_DB_URI is not set in environment variables. Database features will be disabled.");
+            return;
+        }
+        await connect(process.env.MONGO_DB_URI);
+        console.log("Database connected successfully.");
     } catch (error) {
-        console.log(error);
-        process.exit(1)
+        console.error("[DB Error] Database connection failed:", error.message);
     }
-}
+};
+
 export default connectDB;
 
 
