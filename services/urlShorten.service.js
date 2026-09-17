@@ -4,13 +4,11 @@ import ShortUrlModel from '../models/shortenUrl.model.js';
 
 async function createShortUrl(originalUrl, shortCode, host) {
     try {
-        let instance = await ShortUrlModel.findOne({ shortCode });
-        if (!instance) {
-            await ShortUrlModel.create({
-                originalUrl,
-                shortCode
-            });
-        }
+        await ShortUrlModel.findOneAndUpdate(
+            { shortCode },
+            { originalUrl },
+            { upsert: true, new: true }
+        );
     } catch (dbErr) {
         console.warn("[ShortURL Warning] Could not persist shortcode to database:", dbErr.message);
     }

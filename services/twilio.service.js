@@ -62,41 +62,37 @@ async function twilioWhatsapp(target, legacyProfileName, legacyDownloadUrl, lega
     const client = twilio(accountSid, authToken);
 
     // WhatsApp API strictly enforces a 16MB limit on video media attachments.
-    // If sizeMb is known and > 16MB, mediaUrl will fail; send the short/direct link directly as text.
     const isVideoWithinLimit = Boolean(directVideoUrl && (!sizeMb || sizeMb <= 16));
 
     if (isVideoWithinLimit) {
         try {
             console.log(`[Twilio] Sending video media to ${recipient} (Size: ${sizeMb ? sizeMb + 'MB' : 'unknown'})...`);
-            const caption = message || `Hello ${profileName}! Here is your video 🎥\n\nDownload Link: ${shortUrl || directVideoUrl}`;
-
-            const response = await client.messages.create({
+            
+            const messagePayload = {
                 from,
                 to: recipient,
-                body: caption,
                 mediaUrl: [directVideoUrl]
-            });
+            };
+
+            // Only add body text if explicitly requested
+            if (message) {
+                messagePayload.body = message;
+            }
+
+            const response = await client.messages.create(messagePayload);
 
             console.log(`[Twilio] Video message dispatched successfully! SID: ${response.sid}`);
             return { success: true, sid: response.sid };
         } catch (mediaError) {
-            console.warn(`[Twilio Warning] Media send failed (${mediaError.message}). Falling back to text message with link.`);
+            console.warn(`[Twilio Warning] Media send failed (${mediaError.message}). Falling back to clean link message.`);
             // Fallback to text message below
         }
     }
 
-    // Text message delivery (either because video > 16MB, mediaUrl failed, or informational message)
-    let bodyText = message;
+    // Text message delivery (only if video > 16MB or media send failed or informational notice)
+    let bodyText = message || shortUrl || directVideoUrl;
     if (!bodyText) {
-        if (shortUrl || directVideoUrl) {
-            const videoLink = shortUrl || directVideoUrl;
-            const sizeNotice = sizeMb && sizeMb > 16
-                ? `\n\n(Note: Video size is ${sizeMb} MB, which exceeds WhatsApp's 16MB direct attachment limit, but you can view and download it directly using the link above!)`
-                : '';
-            bodyText = `Hello ${profileName}! 🎥\n\nHere is your video download link:\n${videoLink}${sizeNotice}`;
-        } else {
-            bodyText = `Hello ${profileName}, we could not fetch your video. Please verify the link and try again.`;
-        }
+        bodyText = "Could not fetch the video.";
     }
 
     try {
