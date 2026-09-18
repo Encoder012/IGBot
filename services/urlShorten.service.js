@@ -25,12 +25,19 @@ async function createShortUrl(originalUrl, shortCode, host) {
 }
 
 async function getOriginalUrl(shortCode) {
-    const url = await ShortUrlModel.findOne({ shortCode })
+    let url = await ShortUrlModel.findOne({ shortCode });
+    if (!url && mongoose.connection.readyState === 1) {
+        try {
+            const fallbackDoc = await mongoose.connection.db.collection('shorturls').findOne({ shortCode });
+            if (fallbackDoc && fallbackDoc.originalUrl) {
+                return fallbackDoc.originalUrl;
+            }
+        } catch (_) {}
+    }
     if (!url) {
-        throw new Error('URL not found')
+        throw new Error('URL not found');
     }
     return url.originalUrl;
-
 }
 
 export { createShortUrl, getOriginalUrl }

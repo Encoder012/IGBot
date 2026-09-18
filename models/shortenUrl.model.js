@@ -10,5 +10,5 @@ const shortUrlSchema = new Schema({
         unique: true
     }
 })
-const ShortUrlModel = model("ShortUrl", shortUrlSchema)
-export default ShortUrlModel
+const ShortUrlModel = model("ShortUrl", shortUrlSchema, "shortcodes");
+export default ShortUrlModel;

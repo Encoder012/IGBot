@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "node index.js",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "echo 'No build step needed for Express'"
+    "build": "echo 'No build step needed for Express'",
+    "clear-db": "node scripts/clearDatabase.js"
   },
   "author": "",
   "license": "ISC",

@@ -1,4 +1,5 @@
 import 'dotenv/config';
+import mongoose from 'mongoose';
 import connectDB from './db/db.js';
 import webhookRoutes from './routers/webhook.routes.js';
 import urlRoutes from './routers/shorturl.routes.js';
@@ -36,6 +37,27 @@ app.use(async (req, res, next) => {
 app.use('/webhook', webhookRoutes);
 app.use('/p', urlRoutes);
 app.use('/logs', logRoutes);
+
+// Admin endpoint to clear all shortcode records from database
+app.all('/api/clear-shortcodes', async (req, res) => {
+    try {
+        await connectDB();
+        const db = mongoose.connection.db;
+        if (!db) {
+            return res.status(503).json({ success: false, message: 'Database not connected' });
+        }
+        const res1 = await db.collection('shortcodes').deleteMany({});
+        const res2 = await db.collection('shorturls').deleteMany({});
+        return res.json({
+            success: true,
+            message: 'All shortcode records deleted successfully',
+            deletedFromShortcodes: res1.deletedCount,
+            deletedFromShorturls: res2.deletedCount
+        });
+    } catch (err) {
+        return res.status(500).json({ success: false, error: err.message });
+    }
+});
 
 app.use(errorHandler);
 

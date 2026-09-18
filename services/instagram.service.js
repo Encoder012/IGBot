@@ -53,8 +53,9 @@ function cleanUrl(raw) {
  */
 export async function getInstagramVideoLink(reelUrlOrShortcode) {
   const pageUrl = normalizeUrl(reelUrlOrShortcode);
-  const match = pageUrl.match(/\/(?:p|reel|tv|share\/reel)\/([A-Za-z0-9_-]+)/);
-  const shortcode = match ? match[1] : (reelUrlOrShortcode.match(/([A-Za-z0-9_-]{10,})/)?.[1] || 'video');
+  // Match direct post/reel/tv/reels paths (ignore share/reel paths as they contain arbitrary share IDs)
+  const initialUrlMatch = pageUrl.match(/\/(?:p|reel|reels|tv)\/([A-Za-z0-9_-]+)/);
+  let shortcode = initialUrlMatch ? initialUrlMatch[1] : null;
 
   const response = await fetch(pageUrl, {
     headers: {
@@ -69,6 +70,26 @@ export async function getInstagramVideoLink(reelUrlOrShortcode) {
   }
 
   const html = await response.text();
+
+  // Extract the genuine Instagram shortcode from the page data
+  const jsonShortcodeMatch = html.match(/"shortcode":\s*"([A-Za-z0-9_-]+)"/);
+  const canonicalMatch = html.match(/<link\s+rel=["']canonical["']\s+href=["']https?:\/\/(?:www\.)?instagram\.com\/(?:[^\/]+\/)?(?:p|reel|reels|tv)\/([A-Za-z0-9_-]+)/i);
+  const ogUrlMatch = html.match(/<meta\s+property=["']og:url["']\s+content=["']https?:\/\/(?:www\.)?instagram\.com\/(?:[^\/]+\/)?(?:p|reel|reels|tv)\/([A-Za-z0-9_-]+)/i);
+  const redirectedMatch = response.url ? response.url.match(/\/(?:p|reel|reels|tv)\/([A-Za-z0-9_-]+)/) : null;
+
+  if (jsonShortcodeMatch && jsonShortcodeMatch[1]) {
+    shortcode = jsonShortcodeMatch[1];
+  } else if (canonicalMatch && canonicalMatch[1]) {
+    shortcode = canonicalMatch[1];
+  } else if (ogUrlMatch && ogUrlMatch[1]) {
+    shortcode = ogUrlMatch[1];
+  } else if (redirectedMatch && redirectedMatch[1]) {
+    shortcode = redirectedMatch[1];
+  }
+
+  if (!shortcode) {
+    shortcode = initialUrlMatch ? initialUrlMatch[1] : (reelUrlOrShortcode.match(/([A-Za-z0-9_-]{10,})/)?.[1] || 'video');
+  }
 
   // Find all candidate MP4 links in page preload data
   const regex = /([^\s"<>]*?\.mp4[^\s"<>]*)/g;
