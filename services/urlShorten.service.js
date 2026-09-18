@@ -7,7 +7,7 @@ async function createShortUrl(originalUrl, shortCode, host) {
         await ShortUrlModel.findOneAndUpdate(
             { shortCode },
             { originalUrl },
-            { upsert: true, new: true }
+            { upsert: true, returnDocument: 'after' }
         );
     } catch (dbErr) {
         console.warn("[ShortURL Warning] Could not persist shortcode to database:", dbErr.message);
