@@ -131,17 +131,16 @@ export async function getInstagramVideoLink(reelUrlOrShortcode) {
   // Sort descending by size (highest bitrate/quality first)
   validStreams.sort((a, b) => b.contentLength - a.contentLength);
 
-  // Pick the highest quality stream that fits within WhatsApp's 16MB limit
-  // WhatsApp Cloud / Twilio API strictly rejects any video larger than 16MB
-  const optimalStream = validStreams.find((s) => s.sizeMb <= 16) || validStreams[validStreams.length - 1];
+  // Always use the maximum quality video stream available
+  const maxQualityStream = validStreams[0];
 
   return {
     shortcode,
-    url: optimalStream.url,
-    postUrl: optimalStream.url,
-    sizeMb: optimalStream.sizeMb,
-    originalQualityUrl: validStreams[0].url,
-    originalQualitySizeMb: validStreams[0].sizeMb,
+    url: maxQualityStream.url,
+    postUrl: maxQualityStream.url,
+    sizeMb: maxQualityStream.sizeMb,
+    originalQualityUrl: maxQualityStream.url,
+    originalQualitySizeMb: maxQualityStream.sizeMb,
   };
 }
 

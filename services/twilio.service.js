@@ -90,7 +90,7 @@ async function twilioWhatsapp(target, legacyProfileName, legacyDownloadUrl, lega
     }
 
     // Text message delivery (only if video > 16MB or media send failed or informational notice)
-    let bodyText = message || shortUrl || directVideoUrl;
+    let bodyText = message || (shortUrl ? `Here's the link for your video:\n${shortUrl}` : directVideoUrl);
     if (!bodyText) {
         bodyText = "Could not fetch the video.";
     }
